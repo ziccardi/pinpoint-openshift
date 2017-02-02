@@ -1,22 +1,23 @@
 FROM library/centos:centos7
 MAINTAINER mziccard@redhat.com
-RUN yum update -y -q && yum upgrade -y -q
-RUN yum install -y -q java
-# java
-RUN curl -LO 'http://download.oracle.com/otn-pub/java/jdk/7u51-b13/jdk-7u51-linux-x64.rpm' -H 'Cookie: oraclelicense=accept-securebackup-cookie'
-RUN rpm -i jdk-7u51-linux-x64.rpm
-RUN rm jdk-7u51-linux-x64.rpm
-ENV JAVA_HOME /usr/java/default
-ENV PATH $PATH:$JAVA_HOME/bin
+
+RUN yum update -y -q && yum upgrade -y -q && \
+    curl -LO 'http://download.oracle.com/otn-pub/java/jdk/7u51-b13/jdk-7u51-linux-x64.rpm' -H 'Cookie: oraclelicense=accept-securebackup-cookie' && \
+    rpm -i jdk-7u51-linux-x64.rpm && \
+    rm jdk-7u51-linux-x64.rpm
+    
+ENV JAVA_HOME=/usr/java/default \
+    PATH=$PATH:$JAVA_HOME/bin
+    
 RUN curl http://mirrors.whoishostingthis.com/apache/hbase/1.2.4/hbase-1.2.4-bin.tar.gz -o /tmp/hbase-1.2.4-bin.tar.gz
 RUN useradd -ms /bin/bash hbase
+
 USER hbase
-WORKDIR /home/hbase
 RUN tar xvfz /tmp/hbase-1.2.4-bin.tar.gz -C /home/hbase
+
 WORKDIR /home/hbase/hbase-1.2.4
-RUN mkdir /home/hbase/data
-RUN mkdir /home/hbase/zookeeper
-RUN mkdir logs
+RUN mkdir -p /home/hbase/data /home/hbase/zookeeper /home/hbase/logs
+
 COPY conf/hbase-site.xml conf/
 RUN bin/hbase thrift start > logs/thrift.log 2>&1 &
 RUN bin/hbase rest start > logs/rest.log 2>&1 &
