@@ -10,7 +10,7 @@ ENV JAVA_HOME=/usr/java/default \
     PATH=$PATH:$JAVA_HOME/bin
     
 RUN curl http://mirrors.whoishostingthis.com/apache/hbase/1.2.4/hbase-1.2.4-bin.tar.gz -o /tmp/hbase-1.2.4-bin.tar.gz
-RUN useradd -ms /bin/bash hbase
+RUN useradd -r -m -s /bin/bash -u 1001 /bin/bash hbase
 
 USER hbase
 RUN tar xvfz /tmp/hbase-1.2.4-bin.tar.gz -C /home/hbase
