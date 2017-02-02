@@ -17,9 +17,6 @@ WORKDIR /home/hbase/hbase-1.2.4
 RUN mkdir /home/hbase/data
 RUN mkdir /home/hbase/zookeeper
 RUN mkdir logs
-RUN chmod a+rwx logs ../data ../zookeeper
-RUN chmod -R a+rw /home/hbase
-RUN chmod  a+x bin bin/*
 COPY conf/hbase-site.xml conf/
 RUN bin/hbase thrift start > logs/thrift.log 2>&1 &
 RUN bin/hbase rest start > logs/rest.log 2>&1 &
